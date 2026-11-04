@@ -1,0 +1,47 @@
+{
+    "csv_file": "data/dogs.csv",
+    "image_path": "data/images/",
+    "image_dim": 64,
+    "target": {
+        "checkpoint": "./checkpoints/target/",
+        "frozen_checkpoint": "./checkpoints/frozen_target_{layer}/",
+        "learning_rate": 1e-3,
+        "batch_size": 32,
+        "num_classes": 2
+    },
+    "lora": {
+        "checkpoint": "./checkpoints/lora_rank={rank}/",
+        "learning_rate": 1e-3,
+        "batch_size": 32,
+        "num_classes": 2
+    },
+    "vit": {
+        "checkpoint": "./checkpoints/vit/",
+        "learning_rate": 1e-3,
+        "batch_size": 32,
+        "num_classes": 2
+    },
+    "source": {
+        "checkpoint": "./checkpoints/source/",
+        "learning_rate": 1e-3,
+        "batch_size": 64,
+        "num_classes": 8
+    },
+    "challenge": {
+        "checkpoint": "./checkpoints/challenge/",
+        "learning_rate": 1e-3,
+        "batch_size": 32,
+        "num_classes": 2
+    },
+    "source_vit": {
+        "checkpoint": "./checkpoints/source_vit/",
+        "learning_rate": 1e-3,
+        "batch_size": 32,
+        "num_classes": 2
+    },
+    "sae": {
+        "checkpoint": "./checkpoints/sae/",
+        "learning_rate": 1e-3,
+        "batch_size": 256
+    }
+}
