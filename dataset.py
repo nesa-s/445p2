@@ -60,13 +60,14 @@ class ImageStandardizer:
 
     def fit(self, X: npt.NDArray) -> None:
         """Calculate per-channel mean and standard deviation from dataset X."""
-        # TODO: 1(a) - Complete this function
-        raise NotImplementedError()
-    
+        self.image_mean = X.mean(axis=(0, 1, 2))
+        self.image_std = X.std(axis=(0, 1, 2))
+
     def transform(self, X: npt.NDArray) -> npt.NDArray:
         """Return standardized dataset given dataset X."""
-        # TODO: 1(a) - Complete this function
-        raise NotImplementedError()
+        X = np.asarray(X, dtype=np.float64)
+        transform_X = (X - self.image_mean) / self.image_std
+        return transform_X
 
 
 class DogsDataset(Dataset):
@@ -200,7 +201,7 @@ def resize(X: npt.NDArray) -> npt.NDArray:
         resized.append(xi)
     resized = [np.asarray(im) for im in resized]
 
-    return resized
+    return np.array(resized)
 
 
 if __name__ == "__main__":
