@@ -61,8 +61,7 @@ def main() -> None:
     # initial val loss for early stopping
     prev_val_loss = stats[0][1]
 
-    # TODO: 3(c) - define patience for early stopping
-    patience = None
+    patience = 10
     curr_patience = 0
 
     # Loop over the entire dataset multiple times

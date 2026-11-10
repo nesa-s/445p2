@@ -82,9 +82,10 @@ class TransformerEncoder(nn.Module):
             torch.Tensor: Output tensor of the same shape after applying multi-head attention, 
             normalization, and MLP.
         """
-        # TODO: 4(d) - Define the forward pass of the Transformer Encoder block
-        # NOTE: Don't forget about the residual connections!
-        raise NotImplementedError()
+        # Pre-norm residual block: LayerNorm, then the sublayer, added back to the input.
+        x = x + self.multi_head_attention(self.norm1(x))
+        x = x + self.mlp(self.norm2(x))
+        return x
 
 
 class MultiHeadAttention(nn.Module):
@@ -162,7 +163,9 @@ class MultiHeadAttention(nn.Module):
                 q = W_q(sequence) # (N, d) @ (d, d/H) -> (N, d/H)
                 v = W_v(sequence) # (N, d) @ (d, d/H) -> (N, d/H)
 
-                # TODO: 4(c) - Perform scaled dot product self attention, refer to the formula in the spec
+                # Attention(Q, K, V) = softmax(Q K^T / sqrt(d_k)) V
+                scores = (q @ k.transpose(-2, -1)) / self.scale_factor
+                attention = self.softmax(scores) @ v
 
                 # Log the current attention head's attention values
                 seq_result.append(attention)
@@ -256,9 +259,8 @@ class ViT(nn.Module):
         # Patch images
         patches = patchify(X,self.num_patches)
 
-        # TODO: 4(e) - Get linear projection of each patch to a token (hint: the necessary layers might already be defined!)
-        raise NotImplementedError()
-        embedded_patches = None
+        # Project each flattened patch to an embedding of size embedding_d
+        embedded_patches = self.patch_to_token(patches)
 
         # Add the classification (sometimes called 'cls') token to the tokenized_patches
         all_tokens = torch.stack([torch.vstack((self.cls_token, embedded_patches[i])) for i in range(len(embedded_patches))])
@@ -267,9 +269,9 @@ class ViT(nn.Module):
         pos_embed = self.pos_embed.repeat(B, 1, 1)
         all_tokens = all_tokens + pos_embed
 
-        # TODO: 4(e) - run the positionaly embedded tokens through all transformer blocks 
-        raise NotImplementedError()
-        # stored in self.transformer_blocks
+        # Run the token sequence through each transformer block in order
+        for block in self.transformer_blocks:
+            all_tokens = block(all_tokens)
 
         # Extract the classification token and put through mlp
         class_token = all_tokens[:, 0]
