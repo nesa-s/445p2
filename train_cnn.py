@@ -30,9 +30,9 @@ def main():
     # Model
     model = Target()
 
-    # TODO: 2(d) - define loss function, and optimizer
-    criterion = None
-    optimizer = None
+    # Section B: cross-entropy loss and Adam at the target learning rate (1e-3).
+    criterion = torch.nn.CrossEntropyLoss()
+    optimizer = torch.optim.AdaCm(model.parameters(), lr=config("target.learning_rate"))
 
     print("Number of float-valued parameters:", count_parameters(model))
 
@@ -57,8 +57,8 @@ def main():
     # initial val loss for early stopping
     prev_val_loss = stats[0][1]
 
-    # TODO: 2(f) - define patience for early stopping
-    patience = None
+    # 2f
+    patience = 5
     curr_count_to_patience = 0
 
     # Loop over the entire dataset multiple times

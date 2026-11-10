@@ -24,26 +24,26 @@ class Source(nn.Module):
         """Define model architecture."""
         super().__init__()
 
-        # TODO: 3(a) - define each layer
-        self.conv1 = None
-        self.pool = None
-        self.conv2 = None
-        self.conv3 = None
-        self.fc1 = None
+        self.conv1 = nn.Conv2d(in_channels=3, out_channels=16, kernel_size=5, stride=2, padding=2)
+        self.pool = nn.MaxPool2d(kernel_size=2, stride=2)
+        self.conv2 = nn.Conv2d(in_channels=16, out_channels=64, kernel_size=5, stride=2, padding=2)
+        self.conv3 = nn.Conv2d(in_channels=64, out_channels=8, kernel_size=5, stride=2, padding=2)
+        self.fc1 = nn.Linear(in_features=32, out_features=8)
 
         self.init_weights()
-        raise NotImplementedError()
 
     def init_weights(self) -> None:
         """Initialize model weights."""
         set_random_seed()
 
         for conv in [self.conv1, self.conv2, self.conv3]:
-            # TODO: 3(a) - initialize the parameters for the convolutional layers
-            pass
-        
-        # TODO: 3(a) - initialize the parameters for [self.fc1]
-        raise NotImplementedError() 
+            std = sqrt(1 / (5 * 5 * conv.in_channels))
+            nn.init.normal_(conv.weight, mean=0.0, std=std)
+            nn.init.constant_(conv.bias, 0.0)
+
+        fc_std = sqrt(1 / self.fc1.in_features)
+        nn.init.normal_(self.fc1.weight, mean=0.0, std=fc_std)
+        nn.init.constant_(self.fc1.bias, 0.0)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         """
@@ -62,5 +62,11 @@ class Source(nn.Module):
         """
         N, C, H, W = x.shape
 
-        # TODO: 3(a) - forward pass
-        raise NotImplementedError()
+        x = F.relu(self.conv1(x))
+        x = self.pool(x)
+        x = F.relu(self.conv2(x))
+        x = self.pool(x)
+        x = F.relu(self.conv3(x))
+        x = x.view(N, -1)
+        x = self.fc1(x)
+        return x

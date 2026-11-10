@@ -30,9 +30,12 @@ def main() -> None:
     # Model
     model = Source()
 
-    # TODO: 3(b) - define loss function, and optimizer
-    criterion = None
-    optimizer = None
+    criterion = torch.nn.CrossEntropyLoss()
+    optimizer = torch.optim.Adam(
+        model.parameters(),
+        lr=config("source.learning_rate"),
+        weight_decay=0.01,
+    )
 
     print("Number of float-valued parameters:", count_parameters(model))
 

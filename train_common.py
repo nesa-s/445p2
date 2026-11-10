@@ -166,8 +166,10 @@ def early_stopping(stats: list, curr_count_to_patience: int, prev_val_loss: floa
 
     Returns: new values of curr_count_to_patience and prev_val_loss
     """
-    # TODO: 2(e) - implement early stopping
-    raise NotImplementedError()
+    new_val_loss = stats[-1][1]
+    if new_val_loss < prev_val_loss:
+        return 0, new_val_loss
+    return curr_count_to_patience + 1, prev_val_loss
 
 
 def evaluate_epoch(
@@ -257,14 +259,13 @@ def train_epoch(
         4. Performs a backward pass to calculate gradients.
         5. Updates the model weights using the `optimizer`.
     """
-    for i, (X, y) in enumerate(data_loader):
-        # TODO 2(e) - implement training steps:
-        # 1. Reset optimizer gradient calculations
-        # 2. Get model predictions
-        # 3. Calculate loss between model prediction and true labels
-        # 4. Perform backward pass
-        # 5. Update model weights
-        raise NotImplementedError()
+    model.train()
+    for X, y in data_loader:
+        optimizer.zero_grad()
+        output = model(X)
+        loss = criterion(output, y)
+        loss.backward()
+        optimizer.step()
 
 
 def predictions(logits: torch.Tensor) -> torch.Tensor:
@@ -276,5 +277,4 @@ def predictions(logits: torch.Tensor) -> torch.Tensor:
     Returns:
         the predicted class output that has the highest probability. This should be of size (batch_size,).
     """
-    # TODO 2(c) - implement predictions
-    raise NotImplementedError()
+    return torch.argmax(logits, dim=1)
